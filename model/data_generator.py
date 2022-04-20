@@ -46,18 +46,19 @@ class DataSequenceGenerator(Sequence):
 
     def __getitem__(self, idx):
         done = idx * BATCH_SIZE
-        out_img_rows, out_img_cols = IMG_ROWS, IMG_COLS 
+        out_img_rows, out_img_cols = IMG_ROWS // 4, IMG_COLS // 4
         data_sample_len = min(BATCH_SIZE, (self.num_samples - done))
         batch_x = np.empty((data_sample_len, IMG_ROWS, IMG_COLS, 1), dtype=np.float32)
         batch_y = np.empty((data_sample_len, out_img_rows, out_img_cols, self.bin_size), dtype=np.float32)
 
         for i_batch in range(data_sample_len):
-            image_name = self.names[done]
+            image_name = self.names[done+i_batch]
             image_path = f'{IMAGENET_IMAGES_PATH}/{image_name}'
             bgr = cv2.imread(image_path)
             gray = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
             lab = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
-            out_ab = lab[:, :, 1:].astype(np.int32) - 128
+            out_lab = cv2.resize(lab, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
+            out_ab = out_lab[:, :, 1:].astype(np.int32) - 128
             x = gray / 255
             y = get_soft_encoding(out_ab, self.nn_finder, self.bin_size)
 
@@ -68,7 +69,7 @@ class DataSequenceGenerator(Sequence):
             batch_x[i_batch, :, :, 0] = x
             batch_y[i_batch] = y
 
-            done+=1
+            # done+=1
         
         return batch_x, batch_y
 
