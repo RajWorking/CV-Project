@@ -155,3 +155,5 @@ cython_debug/
 
 
 model/test.*
+images/
+__pycache__
