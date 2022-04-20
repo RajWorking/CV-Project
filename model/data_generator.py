@@ -72,6 +72,12 @@ class DataSequenceGenerator(Sequence):
         
         return batch_x, batch_y
 
+    def on_epoch_end(self):
+        np.random.shuffle(self.names)
+
+
+        
+
 def train_generator():
     return DataSequenceGenerator(type='train')
 
