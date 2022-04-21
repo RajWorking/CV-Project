@@ -76,7 +76,7 @@ def build_model(kernel=3):
 
         Conv2D(313, kernel_size=1, activation='softmax', strides=1, padding='valid', name='loss_layer', use_bias=True),
 
-        Conv2D(2, kernel_size=1, strides=1, dilation_rate=1, padding='valid', name='output', use_bias=False),
+        # Conv2D(2, kernel_size=1, strides=1, dilation_rate=1, padding='valid', name='output', use_bias=False),
         
 
     ])

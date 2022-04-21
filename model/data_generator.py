@@ -1,11 +1,10 @@
-from fileinput import filename
 import os
 from random import shuffle, sample
 
 import numpy as np
 import cv2
 import sklearn.neighbors as nn
-from keras.utils import Sequence
+from tensorflow.keras.utils import Sequence
 
 from config import IMAGENET_IMAGES_PATH, NUM_OF_NEIGHBOURS, IMG_ROWS, IMG_COLS, BATCH_SIZE
 
@@ -90,7 +89,7 @@ def valid_generator():
 
 def split_data():
     images_path = IMAGENET_IMAGES_PATH
-    names = [name for name in os.listdir(images_path) if name.contains('.jpg')]
+    names = [name for name in os.listdir(images_path) if name.endswith('.jpeg')]
 
     num_samples = len(names)
     print(f'Total number of images: {num_samples}')

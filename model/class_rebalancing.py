@@ -11,7 +11,7 @@ from config import IMAGENET_IMAGES_PATH, IMG_ROWS, IMG_COLS, INTERPOLATION_METHO
 
 def load_data(sample_size=10000, image_rows=IMG_ROWS, image_cols=IMG_COLS):
     images_path = IMAGENET_IMAGES_PATH
-    names = [name for name in os.listdir(images_path) if name.contains('.jpg')]
+    names = [name for name in os.listdir(images_path) if name.endswith('.jpeg')]
     subsampled_names = random.sample(names, sample_size)
     color_channels = np.empty((sample_size, image_rows, image_cols, 2))
     for i, name in enumerate(subsampled_names):
@@ -31,7 +31,7 @@ def compute_color_prior_factor(color_channels, sigma=SMOOTHING_SIGMA, gamma=REBA
     color_channels = color_channels.reshape(-1, 2)
     ## Find bins for each color pixels
     nearest = nn.NearestNeighbors(n_neighbors=NUM_OF_NEIGHBOURS_REBALANCING, algorithm='ball_tree').fit(ab_bins) # Can use algorithm='auto'
-    _, indexs = nearest.kneighbours(color_channels)
+    _, indexs = nearest.kneighbors(color_channels)
     pos_prob = np.bincount(indexs.flatten())
     pos_indxes = np.unique(indexs)
 
@@ -58,7 +58,7 @@ def compute_color_prior_factor(color_channels, sigma=SMOOTHING_SIGMA, gamma=REBA
 
     np.save('data/prior_factor.npy', prior_factor)
 
-    if __name__ == '__main__':
-        color_channels = load_data()
-        compute_color_prior_factor(color_channels=color_channels)
+if __name__ == '__main__':
+    color_channels = load_data()
+    compute_color_prior_factor(color_channels=color_channels)
 
