@@ -1,3 +1,4 @@
+
 import os
 from random import shuffle, sample
 
@@ -11,12 +12,12 @@ from config import IMAGENET_IMAGES_PATH, NUM_OF_NEIGHBOURS, IMG_ROWS, IMG_COLS, 
 def get_soft_encoding(image_ab, nn_finder, bin_size):
     h, w = image_ab.shape[:2]
     ab = image_ab.reshape(-1, 2)
-    dist, idx = nn_finder.kneighbours(ab)
+    dist, idx = nn_finder.kneighbors(ab)
     sigma = 5
     wts = np.exp(-dist ** 2 / (2 * sigma ** 2))
     wts = wts / np.sum(wts, axis=1)[:, np.newaxis]
     y = np.zeros((ab.shape[0], bin_size))
-    idx_pts = np.arange(ab.shape[0]) # [:, np.newaxis]
+    idx_pts = np.arange(ab.shape[0])[:, np.newaxis]
     y[idx_pts, idx] = wts
     y = y.reshape(h, w, bin_size)
     return y
@@ -55,10 +56,11 @@ class DataSequenceGenerator(Sequence):
             image_path = f'{IMAGENET_IMAGES_PATH}/{image_name}'
             bgr = cv2.imread(image_path)
             gray = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+            gray = cv2.resize(gray, (IMG_ROWS, IMG_COLS), cv2.INTER_AREA)
             lab = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
             out_lab = cv2.resize(lab, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
             out_ab = out_lab[:, :, 1:].astype(np.int32) - 128
-            x = gray / 255
+            x = gray / 255.
             y = get_soft_encoding(out_ab, self.nn_finder, self.bin_size)
 
             if np.random.random() > 0.5:
@@ -89,7 +91,7 @@ def valid_generator():
 
 def split_data():
     images_path = IMAGENET_IMAGES_PATH
-    names = [name for name in os.listdir(images_path) if name.endswith('.jpeg')]
+    names = [name for name in os.listdir(images_path) if name.contains('.jpeg')]
 
     num_samples = len(names)
     print(f'Total number of images: {num_samples}')

@@ -3,12 +3,12 @@ import argparse
 import keras
 import tensorflow as tf
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
-from keras.utils import multi_gpu_model
+from tensorflow.python.keras.utils.multi_gpu_utils import multi_gpu_model
 
 from config import BATCH_SIZE, PATIENCE, EPOCHS, TRAINING_SAMPLES, VALIDATION_SAMPLES
 from data_generator import train_generator, valid_generator
 from model import build_model
-from utils import get_available_gpus, categorical_crossentropy_color
+from utils import categorical_crossentropy_color
 
 if __name__ == '__main__':
     # Parse arguments
@@ -37,22 +37,22 @@ if __name__ == '__main__':
 
 
     # Load our model, added support for Multi-GPUs
-    num_gpu = len(get_available_gpus())
-    if num_gpu >= 2:
-        with tf.device("/cpu:0"):
-            model = build_model()
-            if pretrained_path is not None:
-                model.load_weights(pretrained_path)
+    # num_gpu = len(get_available_gpus())
+    # if num_gpu >= 2:
+    #     with tf.device("/cpu:0"):
+    #         model = build_model()
+    #         if pretrained_path is not None:
+    #             model.load_weights(pretrained_path)
 
-        new_model = multi_gpu_model(model, gpus=num_gpu)
-        # rewrite the callback: saving through the original model and not the multi-gpu model.
-        model_checkpoint = MyCbk(model)
-    else:
-        new_model = build_model()
-        if pretrained_path is not None:
-            new_model.load_weights(pretrained_path)
+    #     new_model = multi_gpu_model(model, gpus=num_gpu)
+    #     # rewrite the callback: saving through the original model and not the multi-gpu model.
+    #     model_checkpoint = MyCbk(model)
+    # else:
+    new_model = build_model()
+    if pretrained_path is not None:
+        new_model.load_weights(pretrained_path)
 
-    sgd = keras.optimizers.SGD(lr=0.001, momentum=0.9, nesterov=True, clipnorm=5.)
+    sgd = tf.keras.optimizers.SGD(lr=0.001, momentum=0.9, nesterov=True, clipnorm=5.)
     new_model.compile(optimizer=sgd, loss=categorical_crossentropy_color)
 
     print(new_model.summary())
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     callbacks = [tensor_board, model_checkpoint, early_stop, reduce_lr]
 
     # Start Fine-tuning
-    new_model.fit_generator(train_generator(),
+    new_model.fit(train_generator(),
                             steps_per_epoch=TRAINING_SAMPLES // BATCH_SIZE,    
                             validation_data=valid_generator(),
                             validation_steps=VALIDATION_SAMPLES // BATCH_SIZE,
