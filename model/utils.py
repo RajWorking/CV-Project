@@ -2,7 +2,7 @@ import keras.backend as K
 import numpy as np
 from tensorflow.python.client import device_lib
 
-prior_factor = np.load('data/prior_factor.npy').astype(np.float32)
+prior_factor = np.load('data/prior_factor_60000.npy').astype(np.float32)
 
 def categorical_crossentropy_color(y_pred, y_true):
     bins = 313
