@@ -14,7 +14,7 @@ from model import build_model
 if __name__ == '__main__':
     channel = 3
 
-    model_weights_path = 'models/model.08-5.7396.hdf5'
+    model_weights_path = 'models/model.10-3.0613.hdf5'
     model = build_model()
     model.load_weights(model_weights_path)
 
@@ -25,7 +25,8 @@ if __name__ == '__main__':
     with open(names_file, 'r') as f:
         names = f.read().splitlines()
 
-    samples = random.sample(names, 10)
+    # samples = random.sample(names, 10)
+    samples = ['./images_to_reach1_gt.png']
 
     h, w = IMG_ROWS // 4, IMG_COLS // 4
 
@@ -37,8 +38,9 @@ if __name__ == '__main__':
     nn_finder = nn.NearestNeighbors(n_neighbors=NB_NEIGHBORS, algorithm='ball_tree').fit(q_ab)
 
     for i in range(len(samples)):
-        image_name = samples[i]
-        filename = os.path.join(image_folder, image_name)
+        # image_name = samples[i]
+        filename = samples[i]
+        # filename = os.path.join(image_folder, image_name)
         print('Start processing image: {}'.format(filename))
         # b: 0 <=b<=255, g: 0 <=g<=255, r: 0 <=r<=255.
         bgr = cv.imread(filename)
@@ -108,11 +110,11 @@ if __name__ == '__main__':
         # print('np.min(out_bgr): ' + str(np.min(out_bgr)))
         out_bgr = out_bgr.astype(np.uint8)
 
-        if not os.path.exists('images_'):
-            os.makedirs('images_')
+        if not os.path.exists('images_to_reach'):
+            os.makedirs('images_to_reach')
 
-        cv.imwrite('images_/{}_image.png'.format(i), gray)
-        cv.imwrite('images_/{}_gt.png'.format(i), bgr)
-        cv.imwrite('images_/{}_out.png'.format(i), out_bgr)
+        cv.imwrite('images_to_reach/{}_image.png'.format(i), gray)
+        cv.imwrite('images_to_reach/{}_gt.png'.format(i), bgr)
+        cv.imwrite('images_to_reach/{}_out.png'.format(i), out_bgr)
 
     K.clear_session()
