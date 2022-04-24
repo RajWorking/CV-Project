@@ -1,7 +1,6 @@
 import keras.backend as K
 import numpy as np
-from tensorflow.python.client import device_lib
-
+import tensorflow as tf
 prior_factor = np.load('data/prior_factor_60000.npy').astype(np.float32)
 
 def categorical_crossentropy_color(y_pred, y_true):
@@ -22,5 +21,9 @@ def categorical_crossentropy_color(y_pred, y_true):
 
 # getting the number of GPUs
 def get_available_gpus():
-    local_device_protos = device_lib.list_local_devices()
-    return [x.name for x in local_device_protos if x.device_type == 'GPU']
+    devices = tf.config.experimental.list_physical_devices('GPU')
+    devices_names = [d.name.split('e:')[1] for d in devices]
+    return devices_names
+    # local_device_protos = device_lib.list_local_devices()
+    # return [x.name for x in local_device_protos if x.device_type == 'GPU']
+

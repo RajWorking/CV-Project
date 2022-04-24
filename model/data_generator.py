@@ -7,7 +7,7 @@ import cv2
 import sklearn.neighbors as nn
 from tensorflow.keras.utils import Sequence
 
-from config import IMAGENET_IMAGES_PATH, NUM_OF_NEIGHBOURS, IMG_ROWS, IMG_COLS, BATCH_SIZE
+from config import IMAGENET_IMAGES_PATH, NUM_OF_NEIGHBOURS, IMG_ROWS, IMG_COLS, BATCH_SIZE, IMAGE_TRAIN_PATH, IMAGE_VALID_PATH
 
 def get_soft_encoding(image_ab, nn_finder, bin_size):
     h, w = image_ab.shape[:2]
@@ -27,9 +27,9 @@ class DataSequenceGenerator(Sequence):
     def __init__(self, type) -> None:
         self.type = type
         if type == 'train':
-            file_name = 'train_names.txt'
+            file_name = IMAGE_TRAIN_PATH
         else:
-            file_name = 'valid_names.txt'
+            file_name = IMAGE_VALID_PATH
         
         with open(file_name, 'r') as f:
             self.names = f.read().splitlines()
@@ -91,7 +91,7 @@ def valid_generator():
 
 def split_data():
     images_path = IMAGENET_IMAGES_PATH
-    names = [name for name in os.listdir(images_path) if name.contains('.jpeg')]
+    names = [name for name in os.listdir(images_path) if name.endswith('.JPEG')]
 
     num_samples = len(names)
     print(f'Total number of images: {num_samples}')
