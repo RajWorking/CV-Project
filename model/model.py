@@ -1,11 +1,11 @@
-import keras.backend as K
+# import keras.backend as K
 import tensorflow as tf
 # from tensorflow import keras
-from keras.layers import Conv2D, BatchNormalization, UpSampling2D, Input, Conv2DTranspose
+from tensorflow.keras.layers import Conv2D, BatchNormalization, UpSampling2D, Input, Conv2DTranspose
 # from keras.models import Model
 # from keras.regularizers import l2
 from tensorflow.keras import Sequential
-from tensorflow.python.keras.utils.multi_gpu_utils import multi_gpu_model
+# from tensorflow.python.keras.utils.multi_gpu_utils import multi_gpu_model
 # from tensorflow.keras.utils import plot_model
 
 from config import IMG_ROWS, IMG_COLS
@@ -84,10 +84,10 @@ def build_model(kernel=3):
     return model
 
 
-if __name__ == '__main__':
-    with tf.device("/cpu:0"):
-        encoder_decoder = build_model()
-    print(encoder_decoder.summary())
+# if __name__ == '__main__':
+  #  with tf.device("/cpu:0"):
+   #     encoder_decoder = build_model()
+   # print(encoder_decoder.summary())
     # plot_model(encoder_decoder, to_file='encoder_decoder.svg', show_layer_names=True, show_shapes=True)
 
-    K.clear_session()
+    # K.clear_session()

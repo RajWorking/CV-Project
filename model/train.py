@@ -3,12 +3,11 @@ import argparse
 import keras
 import tensorflow as tf
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
-from tensorflow.python.keras.utils.multi_gpu_utils import multi_gpu_model
 
 from config import BATCH_SIZE, PATIENCE, EPOCHS, TRAINING_SAMPLES, VALIDATION_SAMPLES
 from data_generator import train_generator, valid_generator
 from model import build_model
-from utils import categorical_crossentropy_color
+from utils import * 
 
 if __name__ == '__main__':
     # Parse arguments
@@ -37,37 +36,40 @@ if __name__ == '__main__':
 
 
     # Load our model, added support for Multi-GPUs
-    # num_gpu = len(get_available_gpus())
-    # if num_gpu >= 2:
-    #     with tf.device("/cpu:0"):
-    #         model = build_model()
-    #         if pretrained_path is not None:
-    #             model.load_weights(pretrained_path)
+    devices = get_available_gpus()
+    num_gpu = len(devices)
+    sgd = tf.keras.optimizers.SGD(lr=0.001* max(1, num_gpu), momentum=0.9, nesterov=True, clipnorm=5.)
+    
+    if num_gpu >= 2:
+        print('Using multiple GPUS')
+        mirrored_strategy = tf.distribute.MirroredStrategy(devices = devices)
+        with mirrored_strategy.scope():
+            model = build_model()
+            if pretrained_path is not None:
+                model.load_weights(pretrained_path)
+            model.compile(optimizer=sgd, loss=categorical_crossentropy_color)
+        # rewrite the callback: saving through the original model and not the multi-gpu model.
+        model_checkpoint = MyCbk(model)
+    else:
+    	model = build_model()
+    	if pretrained_path is not None:	
+            model.load_weights(pretrained_path)
 
-    #     new_model = multi_gpu_model(model, gpus=num_gpu)
-    #     # rewrite the callback: saving through the original model and not the multi-gpu model.
-    #     model_checkpoint = MyCbk(model)
-    # else:
-    new_model = build_model()
-    if pretrained_path is not None:
-        new_model.load_weights(pretrained_path)
+    model.compile(optimizer=sgd, loss=categorical_crossentropy_color) 
 
-    sgd = tf.keras.optimizers.SGD(lr=0.001, momentum=0.9, nesterov=True, clipnorm=5.)
-    new_model.compile(optimizer=sgd, loss=categorical_crossentropy_color)
-
-    print(new_model.summary())
+    print(model.summary())
 
     # Final callbacks
     callbacks = [model_checkpoint, early_stop, reduce_lr]
 
     # Start Fine-tuning
-    new_model.fit(train_generator(),
+    model.fit(train_generator(),
                             steps_per_epoch=TRAINING_SAMPLES // BATCH_SIZE,    
                             validation_data=valid_generator(),
                             validation_steps=VALIDATION_SAMPLES // BATCH_SIZE,
                             epochs=EPOCHS,
                             verbose=1,
                             callbacks=callbacks,
-                            use_multiprocessing=True,
-                            workers=8
+                            # use_multiprocessing=True,
+                             workers=1
                             )
