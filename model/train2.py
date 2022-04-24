@@ -64,9 +64,9 @@ if __name__ == '__main__':
 
     # Start Fine-tuning
     model.fit(train_generator(),
-                            batch_size= BATCH_SIZE,    
+                            batch_size= batch_size,    
                             validation_data=valid_generator(),
-                            validation_steps=VALIDATION_SAMPLES // BATCH_SIZE,
+                            validation_steps=VALIDATION_SAMPLES // batch_size,
                             epochs=EPOCHS,
                             verbose=1,
                             callbacks=callbacks,
