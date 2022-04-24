@@ -8,14 +8,14 @@ SMOOTHING_SIGMA = 5
 REBALANCING_GAMMA = 0.5
 
 
-IMAGE_TRAIN_PATH= './images/imagenette2-320/less_train.txt'
+IMAGE_TRAIN_PATH= './images/imagenette2-320/train_names.txt'
 IMAGE_VALID_PATH= './images/imagenette2-320/valid_names.txt'
 
 
 PATIENCE=50
 EPOCHS=3
-BATCH_SIZE = 48
-TRAINING_SAMPLES = 500
+BATCH_SIZE = 256
+TRAINING_SAMPLES = 13823
 VALIDATION_SAMPLES = 193
 WEIGTH_DECAY = 1e-3
 EPSILON = 1e-8

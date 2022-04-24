@@ -63,13 +63,12 @@ if __name__ == '__main__':
     # Final callbacks
     callbacks = [model_checkpoint, early_stop, reduce_lr]
 
-    batch_size = BATCH_SIZE * num_gpu
+    # batch_size = BATCH_SIZE * num_gpu
 
     # Start Fine-tuning
     model.fit(train_generator(),
-                            batch_size= batch_size,    
+                            batch_size= BATCH_SIZE,    
                             validation_data=valid_generator(),
-                            validation_steps=VALIDATION_SAMPLES // batch_size,
                             epochs=EPOCHS,
                             verbose=1,
                             callbacks=callbacks,
