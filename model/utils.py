@@ -74,19 +74,19 @@ class LossController():
 
         y_pred = K.reshape(y_pred, (-1, self.bin_size))
 
-        gt_313_ab_quant = K.reshape(y_true, (-1, self.bin_size))
+        y_true = K.reshape(y_true, (-1, self.bin_size))
 
-        max_idx = K.argmax(gt_313_ab_quant, axis=1)
+        max_idx = K.argmax(y_true, axis=1)
         weights = K.gather(self.prior_factor, max_idx)
 
         # weights = K.reshape(weights, (-1, h, w, 1)) 
         # weights *= self.get_non_gray_mask(gt_ab)
         weights = K.reshape(weights, (-1, 1)) 
 
-        gt_313_ab_quant *= weights 
+        y_true *= weights 
 
-        cross_entropy = K.categorical_crossentropy(y_pred, gt_313_ab_quant)
-        cross_entropy = K.mean(cross_entropy, axis=-1)
+        cross_entropy = K.categorical_crossentropy(y_pred, y_true)
+        cross_entropy = K.sum(cross_entropy, axis=-1)
 
         return cross_entropy
     
@@ -113,14 +113,13 @@ class LossController():
     #     return y
 
     ''' Class handles prior factor '''
-    def setup_prior_factor(self,alpha=1,gamma=0,verbose=True,priorFile='./data/prior_probs.npy'):
+    def setup_prior_factor(self,gamma=0,verbose=True,priorFile='./data/prior_probs.npy'):
         # INPUTS
         #   alpha           integer     prior correction factor, 0 to ignore prior, 1 to divide by prior, alpha to divide by prior**alpha
         #   gamma           integer     percentage to mix in uniform prior with empirical prior
         #   priorFile       file        file which contains prior probabilities across classes
 
         # settings
-        self.alpha = alpha
         self.gamma = gamma
         self.verbose = verbose
 
@@ -137,7 +136,7 @@ class LossController():
         self.prior_mix = (1-self.gamma)*self.prior_probs + self.gamma*self.uni_probs
 
         # set prior factor
-        self.prior_factor = self.prior_mix**-self.alpha
+        self.prior_factor = 1 / self.prior_mix
         self.prior_factor = self.prior_factor/np.sum(self.prior_probs*self.prior_factor) # re-normalize
 
         # implied empirical prior
