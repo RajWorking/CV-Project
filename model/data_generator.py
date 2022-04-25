@@ -6,7 +6,6 @@ import numpy as np
 import cv2
 import sklearn.neighbors as nn
 from tensorflow.keras.utils import Sequence
-from tensorflow.keras.layers
 
 from config import IMAGENET_IMAGES_PATH, NUM_OF_NEIGHBOURS, IMG_ROWS, IMG_COLS, BATCH_SIZE, IMAGE_TRAIN_PATH, IMAGE_VALID_PATH
 
@@ -50,7 +49,7 @@ class DataSequenceGenerator(Sequence):
         out_img_rows, out_img_cols = IMG_ROWS // 4, IMG_COLS // 4
         data_sample_len = min(BATCH_SIZE, (self.num_samples - done))
         batch_x = np.empty((data_sample_len, IMG_ROWS, IMG_COLS, 1), dtype=np.float32)
-        batch_y = np.empty((data_sample_len, out_img_rows, out_img_cols, self.bin_size), dtype=np.float32)
+        batch_y = np.empty((data_sample_len, out_img_rows, out_img_cols, 2), dtype=np.float32)
 
         # for i_batch in range(data_sample_len):
         #     image_name = self.names[done+i_batch]
@@ -78,7 +77,7 @@ class DataSequenceGenerator(Sequence):
             image_name = self.names[done+i_batch]
             image_path = f'{IMAGENET_IMAGES_PATH}/{image_name}'
             bgr = cv2.imread(image_path)
-            bgr_resized = cv2.resize(bgr, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
+            bgr_resized = cv2.resize(bgr, (IMG_ROWS, IMG_COLS), interpolation = cv2.INTER_AREA)
 
             # if np.random.random() > 0.5:
             #     x = np.fliplr(x)
@@ -86,11 +85,16 @@ class DataSequenceGenerator(Sequence):
 
             # gray = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
             lab = cv2.cvtColor(bgr_resized, cv2.COLOR_BGR2LAB)
+            lab_resized = cv2.resize(lab, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
+
             # gray = cv2.resize(gray, (IMG_ROWS, IMG_COLS), cv2.INTER_AREA)
             in_l = (lab[:, :, 0].astype(np.float32) * 100 / 255) - 50
 
+            # print(in_l.shape)
 
             out_ab = lab[:, :, 1:].astype(np.int32) - 128
+
+            # print(out_ab.shape)
 
             ## Get non_gray_mask_layer
             # non_gray_mask =(np.sum(np.sum(np.sum(np.abs(out_ab) > 5,axis=1),axis=1),axis=1) > 0)[:,None,None,None]
@@ -100,10 +104,12 @@ class DataSequenceGenerator(Sequence):
 
 
             batch_x[i_batch, :, :, 0] = in_l
-            batch_y[i_batch] = cv2.resize(out_ab, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
+#            batch_y[i_batch] = cv2.resize(out_ab, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
+            batch_y[i_batch] = lab_resized[:, :, 1:]
 
             # done+=1
         
+            # print(batch_x[i_batch].shape, batch_y[i_batch].shape)
 
 
         return batch_x, batch_y

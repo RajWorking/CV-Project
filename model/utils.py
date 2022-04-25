@@ -88,7 +88,7 @@ class LossController():
     def setup_soft_encoding(self):
         ab_bins = np.load('data/pts_in_hull.npy')
         self.bin_size = ab_bins.shape[0]
-        self.self.nn_finder = nn.NearestNeighbors(n_neighbors=NUM_OF_NEIGHBOURS, algorithm='ball_tree').fit(ab_bins)
+        self.nn_finder = nn.NearestNeighbors(n_neighbors=NUM_OF_NEIGHBOURS, algorithm='ball_tree').fit(ab_bins)
 
 
     def get_soft_encoding(self, image_ab):
