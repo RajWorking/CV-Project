@@ -70,8 +70,6 @@ class DataSequenceGenerator(Sequence):
 
         #     batch_x[i_batch, :, :, 0] = x
         #     batch_y[i_batch] = y
-
-            # done+=1
         
 
         for i_batch in range(data_sample_len):
@@ -84,31 +82,19 @@ class DataSequenceGenerator(Sequence):
             #     x = np.fliplr(x)
             #     y = np.fliplr(y)
 
-            # gray = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
             lab = cv2.cvtColor(bgr_resized, cv2.COLOR_BGR2LAB)
             lab_resized = cv2.resize(lab, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
-
-            # gray = cv2.resize(gray, (IMG_ROWS, IMG_COLS), cv2.INTER_AREA)
+            lab_resized_ab = lab_resized[:,:,1:] - 128
             in_l = (lab[:, :, 0].astype(np.float32) * 100 / 255) - 50
 
             # print(in_l.shape)
-            encoding = get_soft_encoding(out_ab, self.nn_finder, self.bin_size)
-            out_ab = lab[:, :, 1:].astype(np.int32) - 128
-
-            # print(out_ab.shape)
-
-            ## Get non_gray_mask_layer
-            # non_gray_mask =(np.sum(np.sum(np.sum(np.abs(out_ab) > 5,axis=1),axis=1),axis=1) > 0)[:,None,None,None]
-            ##
-
+            encoding = get_soft_encoding(lab_resized_ab, self.nn_finder, self.bin_size)
 
             batch_x[i_batch, :, :, 0] = in_l
-            batch_y[i_batch] = lab_resized[:, :, 1:]
-            batch_encoding[i_batch] = get_soft_encoding(out_ab, self.nn_finder, self.bin_size)
+            batch_y[i_batch] = lab_resized_ab
+            batch_encoding[i_batch] = encoding
 
         
-            # print(batch_x[i_batch].shape, batch_y[i_batch].shape)
-
 
         return batch_x, [batch_y, batch_encoding]
 

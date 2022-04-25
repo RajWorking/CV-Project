@@ -65,7 +65,8 @@ class LossController():
         """
 
         # gt_313_ab_quant = np.empty(y_pred.shape, dtype=np.float32)
-        gt_ab, gt_313_ab_quant = y_true
+        gt_ab = y_true[0]
+        gt_313_ab_quant = y_true[1]
 
         h, w = y_pred.shape[1:3]
 
