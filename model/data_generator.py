@@ -7,7 +7,7 @@ import cv2
 import sklearn.neighbors as nn
 from tensorflow.keras.utils import Sequence
 
-from config import IMAGENET_IMAGES_PATH, NUM_OF_NEIGHBOURS, IMG_ROWS, IMG_COLS, BATCH_SIZE
+from config import IMAGENET_IMAGES_PATH, NUM_OF_NEIGHBOURS, IMG_ROWS, IMG_COLS, BATCH_SIZE, TRAIN_NAMES_PATH, VALID_NAMES_PATH	
 
 def get_soft_encoding(image_ab, nn_finder, bin_size):
     h, w = image_ab.shape[:2]
@@ -27,9 +27,9 @@ class DataSequenceGenerator(Sequence):
     def __init__(self, type) -> None:
         self.type = type
         if type == 'train':
-            file_name = 'train_names.txt'
+            file_name = TRAIN_NAMES_PATH
         else:
-            file_name = 'valid_names.txt'
+            file_name = VALID_NAMES_PATH
         
         with open(file_name, 'r') as f:
             self.names = f.read().splitlines()

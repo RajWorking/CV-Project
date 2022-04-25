@@ -52,7 +52,7 @@ if __name__ == '__main__':
     if pretrained_path is not None:
         new_model.load_weights(pretrained_path)
 
-    sgd = tf.keras.optimizers.SGD(lr=0.001, momentum=0.9, nesterov=True, clipnorm=5.)
+    sgd = tf.keras.optimizers.SGD(lr=0.005, momentum=0.9, nesterov=True, clipnorm=5.)
     new_model.compile(optimizer=sgd, loss=categorical_crossentropy_color)
 
     print(new_model.summary())
