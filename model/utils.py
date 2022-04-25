@@ -90,7 +90,7 @@ class LossController():
         return cross_entropy
     
     def get_non_gray_mask(self, data_ab):
-        return (np.sum(np.sum(np.sum(np.abs(data_ab) > self.thresh,axis=1),axis=1),axis=1) > 0)[:,None,None,None]
+        return (tf.reduce_sum(tf.reduce_sum(tf.reduce_sum(tf.abs(data_ab) > self.thresh,axis=1),axis=1),axis=1) > 0)[:,tf.newaxis,tf.newaxis,tf.newaxis]
 
     # def setup_soft_encoding(self):
     #     ab_bins = np.load('data/pts_in_hull.npy')
