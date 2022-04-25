@@ -49,7 +49,7 @@ class DataSequenceGenerator(Sequence):
         out_img_rows, out_img_cols = IMG_ROWS // 4, IMG_COLS // 4
         data_sample_len = min(BATCH_SIZE, (self.num_samples - done))
         batch_x = np.empty((data_sample_len, IMG_ROWS, IMG_COLS, 1), dtype=np.float32)
-        batch_y = np.empty((data_sample_len, out_img_rows, out_img_cols, 2), dtype=np.float32)
+        # batch_y = np.empty((data_sample_len, out_img_rows, out_img_cols, 2), dtype=np.float32)
         batch_encoding = np.empty((data_sample_len, out_img_rows, out_img_cols, self.bin_size), dtype=np.float32)
 
         # for i_batch in range(data_sample_len):
@@ -91,12 +91,11 @@ class DataSequenceGenerator(Sequence):
             encoding = get_soft_encoding(lab_resized_ab, self.nn_finder, self.bin_size)
 
             batch_x[i_batch, :, :, 0] = in_l
-            batch_y[i_batch] = lab_resized_ab
+            # batch_y[i_batch] = lab_resized_ab
             batch_encoding[i_batch] = encoding
 
         
-
-        return batch_x, [batch_y, batch_encoding]
+        return batch_x, batch_encoding
 
     def on_epoch_end(self):
         np.random.shuffle(self.names)

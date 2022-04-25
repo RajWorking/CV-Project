@@ -60,37 +60,38 @@ class LossController():
 
     def compute_loss(self, y_true, y_pred):
         """
-            y_true: [B x H x W x 2, B x H x W x Q]
+            y_true: B x H x W x Q
             y_pred: B x H x W x Q
         """
 
         # gt_313_ab_quant = np.empty(y_pred.shape, dtype=np.float32)
-        gt_ab = y_true[0]
-        gt_313_ab_quant = y_true[1]
+        # gt_ab = y_true[0]
+        # gt_313_ab_quant = y_true
 
-        h, w = y_pred.shape[1:3]
+        # h, w = y_pred.shape[1:3]
 
         # gt_313_ab_quant = tf.convert_to_tensor(gt_313_ab_quant)
 
-        gt_313_ab_quant = K.reshape(gt_313_ab_quant, (-1, self.bin_size))
         y_pred = K.reshape(y_pred, (-1, self.bin_size))
 
-        max_idx = K.argmax(y_true, axis=1)
+        gt_313_ab_quant = K.reshape(y_true, (-1, self.bin_size))
+
+        max_idx = K.argmax(gt_313_ab_quant, axis=1)
         weights = K.gather(self.prior_factor, max_idx)
 
-        weights = K.reshape(weights, (-1, h, w, 1)) 
-        weights *= self.get_non_gray_mask(gt_ab)
+        # weights = K.reshape(weights, (-1, h, w, 1)) 
+        # weights *= self.get_non_gray_mask(gt_ab)
         weights = K.reshape(weights, (-1, 1)) 
 
-        y_true *= weights 
+        gt_313_ab_quant *= weights 
 
-        cross_entropy = K.categorical_crossentropy(y_pred, y_true)
+        cross_entropy = K.categorical_crossentropy(y_pred, gt_313_ab_quant)
         cross_entropy = K.mean(cross_entropy, axis=-1)
 
         return cross_entropy
     
-    def get_non_gray_mask(self, data_ab):
-        return (tf.reduce_sum(tf.reduce_sum(tf.reduce_sum(tf.abs(data_ab) > self.thresh,axis=1),axis=1),axis=1) > 0)[:,tf.newaxis,tf.newaxis,tf.newaxis]
+    # def get_non_gray_mask(self, data_ab):
+    #     return (tf.reduce_sum(tf.reduce_sum(tf.reduce_sum(tf.abs(data_ab) > self.thresh,axis=1),axis=1),axis=1) > 0)[:,tf.newaxis,tf.newaxis,tf.newaxis]
 
     # def setup_soft_encoding(self):
     #     ab_bins = np.load('data/pts_in_hull.npy')
