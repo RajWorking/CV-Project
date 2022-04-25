@@ -38,7 +38,7 @@ class LossController():
 
     def __init__(self) -> None:
         self.thresh = 5
-        self.setup_soft_encoding()
+        # self.setup_soft_encoding()
         self.setup_prior_factor()
 
 
@@ -60,27 +60,25 @@ class LossController():
 
     def compute_loss(self, y_true, y_pred):
         """
-            y_true: B x H x W x 2
+            y_true: [B x H x W x 2, B x H x W x Q]
             y_pred: B x H x W x Q
         """
 
         # gt_313_ab_quant = np.empty(y_pred.shape, dtype=np.float32)
-        gt_313_ab_quant = []
-        for i, data_ab in enumerate(y_true):
-            gt_313_ab_quant.append(self.get_soft_encoding(data_ab))
+        gt_ab, gt_313_ab_quant = y_true
 
         h, w = y_pred.shape[1:3]
 
-        gt_313_ab_quant = tf.convert_to_tensor(gt_313_ab_quant)
+        # gt_313_ab_quant = tf.convert_to_tensor(gt_313_ab_quant)
 
         gt_313_ab_quant = K.reshape(gt_313_ab_quant, (-1, self.bin_size))
         y_pred = K.reshape(y_pred, (-1, self.bin_size))
 
         max_idx = K.argmax(y_true, axis=1)
         weights = K.gather(self.prior_factor, max_idx)
-        
+
         weights = K.reshape(weights, (-1, h, w, 1)) 
-        weights *= self.get_non_gray_mask(y_true)
+        weights *= self.get_non_gray_mask(gt_ab)
         weights = K.reshape(weights, (-1, 1)) 
 
         y_true *= weights 
@@ -93,24 +91,24 @@ class LossController():
     def get_non_gray_mask(self, data_ab):
         return (np.sum(np.sum(np.sum(np.abs(data_ab) > self.thresh,axis=1),axis=1),axis=1) > 0)[:,None,None,None]
 
-    def setup_soft_encoding(self):
-        ab_bins = np.load('data/pts_in_hull.npy')
-        self.bin_size = ab_bins.shape[0]
-        self.nn_finder = nn.NearestNeighbors(n_neighbors=NUM_OF_NEIGHBOURS, algorithm='ball_tree').fit(ab_bins)
+    # def setup_soft_encoding(self):
+    #     ab_bins = np.load('data/pts_in_hull.npy')
+    #     self.bin_size = ab_bins.shape[0]
+    #     self.nn_finder = nn.NearestNeighbors(n_neighbors=NUM_OF_NEIGHBOURS, algorithm='ball_tree').fit(ab_bins)
 
 
-    def get_soft_encoding(self, image_ab):
-        h, w = image_ab.shape[:2]
-        ab = image_ab.reshape(-1, 2)
-        dist, idx = self.nn_finder.kneighbors(ab)
-        sigma = 5
-        wts = np.exp(-dist ** 2 / (2 * sigma ** 2))
-        wts = wts / np.sum(wts, axis=1)[:, np.newaxis]
-        y = np.zeros((ab.shape[0], self.bin_size))
-        idx_pts = np.arange(ab.shape[0])[:, np.newaxis]
-        y[idx_pts, idx] = wts
-        y = y.reshape(h, w, self.bin_size)
-        return y
+    # def get_soft_encoding(self, image_ab):
+    #     h, w = image_ab.shape[:2]
+    #     ab = image_ab.reshape(-1, 2)
+    #     dist, idx = self.nn_finder.kneighbors(ab)
+    #     sigma = 5
+    #     wts = np.exp(-dist ** 2 / (2 * sigma ** 2))
+    #     wts = wts / np.sum(wts, axis=1)[:, np.newaxis]
+    #     y = np.zeros((ab.shape[0], self.bin_size))
+    #     idx_pts = np.arange(ab.shape[0])[:, np.newaxis]
+    #     y[idx_pts, idx] = wts
+    #     y = y.reshape(h, w, self.bin_size)
+    #     return y
 
     ''' Class handles prior factor '''
     def setup_prior_factor(self,alpha=1,gamma=0,verbose=True,priorFile='./data/prior_probs.npy'):

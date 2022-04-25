@@ -50,6 +50,7 @@ class DataSequenceGenerator(Sequence):
         data_sample_len = min(BATCH_SIZE, (self.num_samples - done))
         batch_x = np.empty((data_sample_len, IMG_ROWS, IMG_COLS, 1), dtype=np.float32)
         batch_y = np.empty((data_sample_len, out_img_rows, out_img_cols, 2), dtype=np.float32)
+        batch_encoding = np.empty((data_sample_len, out_img_rows, out_img_cols, self.bin_size), dtype=np.float32)
 
         # for i_batch in range(data_sample_len):
         #     image_name = self.names[done+i_batch]
@@ -91,7 +92,7 @@ class DataSequenceGenerator(Sequence):
             in_l = (lab[:, :, 0].astype(np.float32) * 100 / 255) - 50
 
             # print(in_l.shape)
-
+            encoding = get_soft_encoding(out_ab, self.nn_finder, self.bin_size)
             out_ab = lab[:, :, 1:].astype(np.int32) - 128
 
             # print(out_ab.shape)
@@ -100,19 +101,16 @@ class DataSequenceGenerator(Sequence):
             # non_gray_mask =(np.sum(np.sum(np.sum(np.abs(out_ab) > 5,axis=1),axis=1),axis=1) > 0)[:,None,None,None]
             ##
 
-            # y = get_soft_encoding(out_ab, self.nn_finder, self.bin_size)
-
 
             batch_x[i_batch, :, :, 0] = in_l
-#            batch_y[i_batch] = cv2.resize(out_ab, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
             batch_y[i_batch] = lab_resized[:, :, 1:]
+            batch_encoding[i_batch] = get_soft_encoding(out_ab, self.nn_finder, self.bin_size)
 
-            # done+=1
         
             # print(batch_x[i_batch].shape, batch_y[i_batch].shape)
 
 
-        return batch_x, batch_y
+        return batch_x, [batch_y, batch_encoding]
 
     def on_epoch_end(self):
         np.random.shuffle(self.names)
