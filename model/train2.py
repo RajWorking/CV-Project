@@ -22,7 +22,7 @@ if __name__ == '__main__':
     # Callbacks
     # tensor_board = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
     model_names = checkpoint_models_path + 'model.{epoch:02d}-{val_loss:.4f}.hdf5'
-    model_checkpoint = ModelCheckpoint(model_names, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True, period=2)
+    model_checkpoint = ModelCheckpoint(model_names, monitor='val_loss', verbose=1, save_best_only=True, save_weights_only=True, period=15)
     early_stop = EarlyStopping('val_loss', patience=PATIENCE)
     reduce_lr = ReduceLROnPlateau('val_loss', factor=0.1, patience=PATIENCE // 4, verbose=1)
 
@@ -49,13 +49,16 @@ if __name__ == '__main__':
     print(mirrored_strategy.num_replicas_in_sync)
 
     
+    loss_controller = LossController()
+
+
     with mirrored_strategy.scope():
         model = build_model()
         # model_checkpoint = MyCbk(model)
         if pretrained_path is not None:
             model.load_weights(pretrained_path)
-        sgd = tf.keras.optimizers.SGD(lr=0.001* max(1, num_gpu), momentum=0.9, nesterov=True)
-        model.compile(optimizer=sgd, loss=categorical_crossentropy_color) 
+        sgd = tf.keras.optimizers.SGD(lr=0.0005, momentum=0.9, nesterov=True)
+        model.compile(optimizer=sgd, loss=loss_controller.compute_loss) 
     
 
     print(model.summary())

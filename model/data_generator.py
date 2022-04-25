@@ -6,6 +6,7 @@ import numpy as np
 import cv2
 import sklearn.neighbors as nn
 from tensorflow.keras.utils import Sequence
+from tensorflow.keras.layers
 
 from config import IMAGENET_IMAGES_PATH, NUM_OF_NEIGHBOURS, IMG_ROWS, IMG_COLS, BATCH_SIZE, IMAGE_TRAIN_PATH, IMAGE_VALID_PATH
 
@@ -37,7 +38,7 @@ class DataSequenceGenerator(Sequence):
         self.num_samples = len(self.names)
         shuffle(self.names)
 
-        ab_bins = np.load('data/pts_in_lab_space.npy')
+        ab_bins = np.load('data/pts_in_hull.npy')
         self.bin_size = ab_bins.shape[0]
         self.nn_finder = nn.NearestNeighbors(n_neighbors=NUM_OF_NEIGHBOURS, algorithm='ball_tree').fit(ab_bins)
 
@@ -51,27 +52,60 @@ class DataSequenceGenerator(Sequence):
         batch_x = np.empty((data_sample_len, IMG_ROWS, IMG_COLS, 1), dtype=np.float32)
         batch_y = np.empty((data_sample_len, out_img_rows, out_img_cols, self.bin_size), dtype=np.float32)
 
+        # for i_batch in range(data_sample_len):
+        #     image_name = self.names[done+i_batch]
+        #     image_path = f'{IMAGENET_IMAGES_PATH}/{image_name}'
+        #     bgr = cv2.imread(image_path)
+        #     gray = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        #     gray = cv2.resize(gray, (IMG_ROWS, IMG_COLS), cv2.INTER_AREA)
+        #     lab = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
+        #     out_lab = cv2.resize(lab, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
+        #     out_ab = out_lab[:, :, 1:].astype(np.int32) - 128
+        #     x = gray / 255.
+        #     y = get_soft_encoding(out_ab, self.nn_finder, self.bin_size)
+
+        #     if np.random.random() > 0.5:
+        #         x = np.fliplr(x)
+        #         y = np.fliplr(y)
+
+        #     batch_x[i_batch, :, :, 0] = x
+        #     batch_y[i_batch] = y
+
+            # done+=1
+        
+
         for i_batch in range(data_sample_len):
             image_name = self.names[done+i_batch]
             image_path = f'{IMAGENET_IMAGES_PATH}/{image_name}'
             bgr = cv2.imread(image_path)
-            gray = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-            gray = cv2.resize(gray, (IMG_ROWS, IMG_COLS), cv2.INTER_AREA)
-            lab = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
-            out_lab = cv2.resize(lab, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
-            out_ab = out_lab[:, :, 1:].astype(np.int32) - 128
-            x = gray / 255.
-            y = get_soft_encoding(out_ab, self.nn_finder, self.bin_size)
+            bgr_resized = cv2.resize(bgr, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
 
-            if np.random.random() > 0.5:
-                x = np.fliplr(x)
-                y = np.fliplr(y)
+            # if np.random.random() > 0.5:
+            #     x = np.fliplr(x)
+            #     y = np.fliplr(y)
 
-            batch_x[i_batch, :, :, 0] = x
-            batch_y[i_batch] = y
+            # gray = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+            lab = cv2.cvtColor(bgr_resized, cv2.COLOR_BGR2LAB)
+            # gray = cv2.resize(gray, (IMG_ROWS, IMG_COLS), cv2.INTER_AREA)
+            in_l = (lab[:, :, 0].astype(np.float32) * 100 / 255) - 50
+
+
+            out_ab = lab[:, :, 1:].astype(np.int32) - 128
+
+            ## Get non_gray_mask_layer
+            # non_gray_mask =(np.sum(np.sum(np.sum(np.abs(out_ab) > 5,axis=1),axis=1),axis=1) > 0)[:,None,None,None]
+            ##
+
+            # y = get_soft_encoding(out_ab, self.nn_finder, self.bin_size)
+
+
+            batch_x[i_batch, :, :, 0] = in_l
+            batch_y[i_batch] = cv2.resize(out_ab, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
 
             # done+=1
         
+
+
         return batch_x, batch_y
 
     def on_epoch_end(self):
