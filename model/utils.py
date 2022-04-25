@@ -125,6 +125,7 @@ class LossController():
 
         # empirical prior probability
         self.prior_probs = np.load(priorFile)
+        self.bin_size = self.prior_probs.shape[0]
 
         # define uniform probability
         self.uni_probs = np.zeros_like(self.prior_probs)

@@ -84,8 +84,8 @@ class DataSequenceGenerator(Sequence):
 
             lab = cv2.cvtColor(bgr_resized, cv2.COLOR_BGR2LAB)
             lab_resized = cv2.resize(lab, (out_img_rows, out_img_cols), interpolation = cv2.INTER_AREA)
-            lab_resized_ab = lab_resized[:,:,1:] - 128
-            in_l = (lab[:, :, 0].astype(np.float32) * 100 / 255) - 50
+            lab_resized_ab = lab_resized[:,:,1:].astype('int32') - 128
+            in_l = ((lab[:, :, 0].astype(np.float32) * 100 / 255) - 50).astype('int32')
 
             # print(in_l.shape)
             encoding = get_soft_encoding(lab_resized_ab, self.nn_finder, self.bin_size)
