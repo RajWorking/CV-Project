@@ -64,15 +64,23 @@ class LossController():
             y_pred: B x H x W x Q
         """
 
-        gt_313_ab_quant = np.empty(y_pred.shape, dtype=np.float32)
+        # gt_313_ab_quant = np.empty(y_pred.shape, dtype=np.float32)
+        gt_313_ab_quant = []
         for i, data_ab in enumerate(y_true):
-            gt_313_ab_quant[i] = self.get_soft_encoding(data_ab)
+            gt_313_ab_quant.append(self.get_soft_encoding(data_ab))
+
+        h, w = y_pred.shape[1:3]
+
+        gt_313_ab_quant = tf.convert_to_tensor(gt_313_ab_quant)
 
         gt_313_ab_quant = K.reshape(gt_313_ab_quant, (-1, self.bin_size))
         y_pred = K.reshape(y_pred, (-1, self.bin_size))
 
         max_idx = K.argmax(y_true, axis=1)
         weights = K.gather(self.prior_factor, max_idx)
+        
+        weights = K.reshape(weights, (-1, h, w, 1)) 
+        weights *= self.get_non_gray_mask(y_true)
         weights = K.reshape(weights, (-1, 1)) 
 
         y_true *= weights 
@@ -82,8 +90,8 @@ class LossController():
 
         return cross_entropy
     
-    # def get_non_gray_mask(self, data_ab):
-    #     return (np.sum(np.sum(np.sum(np.abs(data_ab) > self.thresh,axis=1),axis=1),axis=1) > 0)[:,None,None,None]
+    def get_non_gray_mask(self, data_ab):
+        return (np.sum(np.sum(np.sum(np.abs(data_ab) > self.thresh,axis=1),axis=1),axis=1) > 0)[:,None,None,None]
 
     def setup_soft_encoding(self):
         ab_bins = np.load('data/pts_in_hull.npy')
