@@ -14,19 +14,30 @@ from model import build_model
 if __name__ == '__main__':
     channel = 3
 
-    model_weights_path = 'models/model.10-3.0613.hdf5'
+    model_weights_path = 'models/model.0030-3.2873.hdf5'
     model = build_model()
     model.load_weights(model_weights_path)
 
     print(model.summary())
 
-    image_folder = './images/imagenet_subset'
+    image_folder = './images/imagenette'
     names_file = 'valid_names.txt'
     with open(names_file, 'r') as f:
         names = f.read().splitlines()
 
     # samples = random.sample(names, 10)
-    samples = ['./images_to_reach1_gt.png']
+    samples = [
+        'test.jpg',
+        'test2.jpg',
+        'test3.jpg',
+        'test4.jpg',
+        'test5.jpg',
+        'test6.jpg',
+        'test7.jpg',
+        'test8.jpg',
+        'test9.jpg',
+        'test10.jpg'
+    ]
 
     h, w = IMG_ROWS // 4, IMG_COLS // 4
 
@@ -38,9 +49,9 @@ if __name__ == '__main__':
     nn_finder = nn.NearestNeighbors(n_neighbors=NB_NEIGHBORS, algorithm='ball_tree').fit(q_ab)
 
     for i in range(len(samples)):
-        # image_name = samples[i]
-        filename = samples[i]
-        # filename = os.path.join(image_folder, image_name)
+        image_name = samples[i]
+        # filename = samples[i]
+        filename = os.path.join(image_folder, image_name)
         print('Start processing image: {}'.format(filename))
         # b: 0 <=b<=255, g: 0 <=g<=255, r: 0 <=r<=255.
         bgr = cv.imread(filename)

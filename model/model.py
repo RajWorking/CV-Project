@@ -63,25 +63,25 @@ def build_model(kernel=3):
         Conv2D(512, strides=1, dilation_rate=2, name='conv6_3', **const_params),
         BatchNormalization(),
 
-        Conv2D(512, strides=1, dilation_rate=1, name='conv7_1', **const_params),
-        Conv2D(512, strides=1, dilation_rate=1, name='conv7_2', **const_params),
-        Conv2D(512, strides=1, dilation_rate=1, name='conv7_3', **const_params),
-        # Conv2D(256, strides=1, dilation_rate=1, name='conv7_1', **const_params),
-        # Conv2D(256, strides=1, dilation_rate=1, name='conv7_2', **const_params),
-        # Conv2D(256, strides=1, dilation_rate=1, name='conv7_3', **const_params),
+        # Conv2D(512, strides=1, dilation_rate=1, name='conv7_1', **const_params),
+        # Conv2D(512, strides=1, dilation_rate=1, name='conv7_2', **const_params),
+        # Conv2D(512, strides=1, dilation_rate=1, name='conv7_3', **const_params),
+        Conv2D(256, strides=1, dilation_rate=1, name='conv7_1', **const_params),
+        Conv2D(256, strides=1, dilation_rate=1, name='conv7_2', **const_params),
+        Conv2D(256, strides=1, dilation_rate=1, name='conv7_3', **const_params),
 
         BatchNormalization(),
 
         
-        Conv2DTranspose(256, kernel_size=4, strides=2, padding='same', name='conv8_1', activation='relu', use_bias=True),
-        Conv2D(256, strides=1, dilation_rate=1, name='conv8_2', **const_params),
-        Conv2D(256, strides=1, dilation_rate=1, name='conv8_3', **const_params),
+        # Conv2DTranspose(256, kernel_size=4, strides=2, padding='same', name='conv8_1', activation='relu', use_bias=True),
+        # Conv2D(256, strides=1, dilation_rate=1, name='conv8_2', **const_params),
+        # Conv2D(256, strides=1, dilation_rate=1, name='conv8_3', **const_params),
 
-        # UpSampling2D(size=(2, 2)),
-        # Conv2D(128, strides=1, dilation_rate=1, name='conv8_1', **const_params),
-        # Conv2Dc(128, strides=1, dilation_rate=1, name='conv8_2', **const_params),
-        # Conv2D(128, strides=1, dilation_rate=1, name='conv8_3', **const_params),
-        # BatchNormalization(),
+        UpSampling2D(size=(2, 2)),
+        Conv2D(128, strides=1, dilation_rate=1, name='conv8_1', **const_params),
+        Conv2D(128, strides=1, dilation_rate=1, name='conv8_2', **const_params),
+        Conv2D(128, strides=1, dilation_rate=1, name='conv8_3', **const_params),
+        BatchNormalization(),
 
         Conv2D(313, kernel_size=1, activation='softmax', strides=1, padding='valid', name='loss_layer', use_bias=True),
 
