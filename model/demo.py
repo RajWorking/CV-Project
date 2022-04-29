@@ -14,7 +14,7 @@ from model import build_model
 if __name__ == '__main__':
     channel = 3
 
-    model_weights_path = 'models/model.0030-3.2873.hdf5'
+    model_weights_path = 'models/Landscape.hdf5'
     model = build_model()
     model.load_weights(model_weights_path)
 
@@ -36,7 +36,8 @@ if __name__ == '__main__':
         'test7.jpg',
         'test8.jpg',
         'test9.jpg',
-        'test10.jpg'
+        'test10.jpg',
+        'test11.jpeg'
     ]
 
     h, w = IMG_ROWS // 4, IMG_COLS // 4
