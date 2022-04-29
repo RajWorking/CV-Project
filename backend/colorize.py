@@ -3,7 +3,7 @@ import cv2 as cv
 import keras.backend as K
 import numpy as np
 import PIL.Image as Image
-from backend.model import build_model_deconv, build_model
+from model import build_model_deconv, build_model, build_model_imagenette
 
 from config import IMG_ROWS, IMG_COLS, EPSILON
 
@@ -23,13 +23,16 @@ def colorize(image_bytes, model_type, temp):
 
     if model_type == 'deconv':
         model = build_model_deconv()
-
-        model_weights_path = ''
+        model_weights_path = './models/'
+    elif model_type == 'imagenette':
+        model = build_model_imagenette()
+        model_weights_path = './models/'
+            
     elif model_type == 'landscape':
         model = build_model()
-        model_weights_path = ''
+        model_weights_path = './models/'
     else:
-        model_weights_path = ''
+        model_weights_path = './models/'
         model = build_model()
         print('Using default model')
 
@@ -53,9 +56,6 @@ def colorize(image_bytes, model_type, temp):
 
     # L: 0 <=L<= 255, a: 42 <=a<= 226, b: 20 <=b<= 223.
     lab = cv.cvtColor(image, cv.COLOR_BGR2LAB)
-    L = lab[:, :, 0]
-    a = lab[:, :, 1]
-    b = lab[:, :, 2]
 
     x_test = np.empty((1, IMG_ROWS, IMG_COLS, 1), dtype=np.float32)
     x_test[0, :, :, 0] = gray_image / 255.

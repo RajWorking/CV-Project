@@ -6,8 +6,9 @@ from colorize import colorize, encode_image
 from flask import Flask, request
 from flask_cors import CORS
 
+
 app = Flask(__name__)
-app.config.update(SECRET_KEY=os.environ.get('SECRET'))
+app.config.update(SECRET_KEY=os.getenv('SECRET', 'secret'))
 
 CORS(app, resources={r"/*": {"origins": "*"}})
 
