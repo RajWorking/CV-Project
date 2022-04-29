@@ -1,4 +1,4 @@
-import { Divider, Grid } from '@mui/material';
+import { Divider, Grid, Slider} from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
 import { Button, Card, CardBody, CardImg, CardTitle, Col, Row } from 'reactstrap';
@@ -83,7 +83,12 @@ const Starter = () => {
             </Card>
           </Grid>
         </Grid>
-        <Grid container spacing={0}></Grid>
+        <Grid container spacing={0}>
+            <Grid item xs={12} sx={{paddingLeft: 30, paddingRight: 30}}>
+
+                <Slider defaultValue={0.38} step={0.01} marks min={0} max={1} aria-label="Default" valueLabelDisplay="auto" sx={{padding:"50"}} />
+            </Grid>
+        </Grid>
         <Grid container spacing={0} justifyContent="space-evenly" sx={{ mt: 3 }}>
           <Grid item alignSelf="center">
             <input type="file" id="files" onChange={handleChange} style={{ display: 'none' }} />
