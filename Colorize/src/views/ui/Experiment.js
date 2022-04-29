@@ -22,30 +22,32 @@ const Starter = () => {
     const [file, setFile] = useState();
     const [img, setImg] = useState();
 
-    let handleChange = (e) => {
+    const handleChange = (e) => {
         e.preventDefault();
         console.log(e.target.files[0]);
         setFile(e.target.files[0]);
         setImg(URL.createObjectURL(e.target.files[0]))
     }
 
-    let Convert = (e) => {
-        e.preventDefault();
-        console.log(file, typeof(file))
-        const data = new FormData();
-        data.append('file', file);
-        console.log(data)
-    
-        const submit = async() => {
-          await fetch('/api/upload', {
+    const Convert = (e) => {
+        e.preventDefault()
+        const formData = new FormData();
+        formData.append('file', file)
+
+        for (var key of formData.entries()) {
+            console.log(key[0] + ', ' + key[1]);
+        }
+        
+        const Upload = async() => {
+          await fetch('http://localhost:8000/a', {
             method: 'POST',
-            body: data
+            body: formData
           }).then(resp => {
             resp.json().then(data => {console.log(data)})
           })
         }
-        submit();
-    }
+        Upload();
+      }
 
     return (
         <Row>

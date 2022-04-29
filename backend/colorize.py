@@ -15,10 +15,9 @@ def encode_image(image):
     return (byte_im)
 
 
-def colorize(image_bytes, model_type, temp):
+def colorize(image, model_type=None, temp=None):
 
 
-    image = Image.open(io.BytesIO(image_bytes))
     gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 
     if model_type == 'deconv':
@@ -94,5 +93,8 @@ def colorize(image_bytes, model_type, temp):
     out_bgr = out_bgr.astype(np.uint8)
 
     K.clear_session()
+
+    cv.imwrite('./img.jpeg', image)
+    cv.imwrite('./img_out.jpeg', image)
 
     return image, out_bgr
