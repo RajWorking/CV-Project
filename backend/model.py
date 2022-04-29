@@ -1,13 +1,15 @@
 from tensorflow.keras import Sequential
 from keras.layers import Conv2D, BatchNormalization, UpSampling2D, Input, Conv2DTranspose
-
+from tensorflow.keras.regularizers import l2
 from config import IMG_ROWS, IMG_COLS
 
 const_params = {
     'activation': 'relu',
     'use_bias': True,
     'padding': 'same',
-    'kernel_size': 3
+    'kernel_size': 3,
+    'kernel_initializer': 'he_normal',
+    'kernel_regularizer': l2(1e-3),
 }
 
 def build_model():
@@ -61,7 +63,6 @@ def build_model():
         BatchNormalization(),
 
         Conv2D(313, kernel_size=1, activation='softmax', strides=1, padding='valid', name='loss_layer', use_bias=True),
-
 
     ])
 
@@ -180,8 +181,6 @@ def build_model_imagenette():
 
 
         Conv2D(313, kernel_size=1, activation='softmax', strides=1, padding='valid', name='loss_layer', use_bias=True),
-
-        
 
     ])
 
