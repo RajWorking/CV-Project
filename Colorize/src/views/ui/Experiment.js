@@ -80,26 +80,25 @@ const Starter = () => {
                 {/* <Grid container spacing={0}>
 
                 </Grid> */}
-                <Grid container spacing={0} justifyContent="space-evenly">
-                    <Grid item alignSelf="center" justifyContent="center">
+                <Grid container spacing={0} justifyContent="space-evenly" sx={{mt: 3}}>
+                    <Grid item alignSelf="center">
                         <input type="file" id="files" onChange={handleChange} style={{display: "none"}}/>
-                        <label for="files" onClick={handleClick} style={{padding: ''}}>
+                        <label htmlFor="files" onClick={handleClick}>
                             <Button variant="outline-dark" component="span" style={{width: "100%"}}>
                                 Select File
                             </Button>    
                         </label>
-                        {/* <input type="file" id="files" onChange={handleChange} style={{display: "none"}}/>
-                        <label for="files" onClick={handleClick}>
-                            <Button variant="outline-dark" component="span" style={{width: "100%"}}>
-                                Select File
-                            </Button>    
-                        </label> */}
                     </Grid>
+                    
                     <Divider orientation="vertical" flexItem>
                             OR
                     </Divider>
-                    <Grid item xs={3} alignSelf="center" justifySelf="center" style={{flexWrap: 'wrap'}}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id dignissim justo.
+                    
+                    <Grid item xs={6} alignSelf="center" justifySelf="center">
+                    {/* <Grid container >
+                        <Grid Item
+                    </Grid> */}
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id dignissim justo. etermines a grid item’s location within the grid by referring to specific grid lines. grid-column-start/grid-row-start is the line where the item begins, and grid-column-end/grid-row-end is the line where the item ends.
                         {/* {content} */}
                     </Grid>
                     <Grid item alignSelf="center" justifySelf="center">
@@ -108,21 +107,6 @@ const Starter = () => {
                         </Button>
                     </Grid>
                 </Grid>
-                {/* <Row className="mt-3" xs={2} >
-                    <input type="file" id="files" onChange={handleChange} style={{display: "none"}}/>
-                    <label for="files" onClick={handleClick}>
-                        <Button variant="outline-dark" component="span" style={{width: "50%"}}>
-                            Select File
-                        </Button>    
-                    </label>
-                    <Divider orientation="vertical" flexItem>
-                        OR
-                    </Divider>
-                    <Button/>
-                    <Button variant="contained">
-                        Convert
-                    </Button>
-                </Row> */}
             </Col>
         </Row>
     );
