@@ -45,9 +45,12 @@ def get_prediction():
 
 
     # model_type = data['model']
-    # temp = data['temp']
+    # print(request.data, request.form, request.json)
+    temp = request.form['temp']
+    model_type = request.form['model_type']
+    # print(temp)
 
-    input_image, output_img = colorize(img)
+    input_image, output_img = colorize(img, model_type=model_type,temp=temp)
 
     obj = {
         'input': encode_image(input_image),
