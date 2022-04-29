@@ -1,12 +1,8 @@
 import keras.backend as K
 import tensorflow as tf
-# from tensorflow import keras
 from keras.layers import Conv2D, BatchNormalization, UpSampling2D, Input, Conv2DTranspose
-# from keras.models import Model
-# from keras.regularizers import l2
+from tensorflow.keras.regularizers import l2
 from tensorflow.keras import Sequential
-from tensorflow.python.keras.utils.multi_gpu_utils import multi_gpu_model
-# from tensorflow.keras.utils import plot_model
 
 from config import IMG_ROWS, IMG_COLS
 
@@ -24,7 +20,9 @@ def build_model(kernel=3):
         'activation': 'relu',
         'use_bias': True,
         'padding': 'same',
-        'kernel_size': 3
+        'kernel_size': 3,
+        'kernel_initializer': 'he_normal',
+        'kernel_regularizer': l2(1e-3)
     }
 
     model = Sequential([
