@@ -1,7 +1,8 @@
 import json
 import os
+import base64
 
-from colorize import colorize, encode_image
+from colorize import colorize
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -19,6 +20,14 @@ def to_json(payload, status=200):
     return json.dumps(payload, indent=4, sort_keys=True, default=str), status, {
         'content-type': 'application/json'}
 
+
+
+def encode_image(image):
+    is_success, im_buf_arr = cv2.imencode(".jpg", image)
+    byte_im = im_buf_arr.tobytes()
+    im_b64 = base64.b64encode(byte_im)
+    im_str = str(im_b64)[2:-1]
+    return im_str
 
 @app.route('/a', methods=['POST', 'GET'])
 def get_prediction():
@@ -45,9 +54,7 @@ def get_prediction():
         'output': encode_image(output_img),
     }
     
-    # return to_json(obj)
-
-    return to_json({'hi': 'hi'})
+    return to_json(obj)
 
 @app.route('/', methods=['GET'])
 def hello():

@@ -8,11 +8,7 @@ from model import build_model_deconv, build_model, build_model_imagenette
 from config import IMG_ROWS, IMG_COLS, EPSILON
 
 
-def encode_image(image):
-    is_success, im_buf_arr = cv.imencode(".jpg", image)
-    print(is_success)
-    byte_im = im_buf_arr.tobytes()
-    return (byte_im)
+
 
 
 def colorize(image, model_type=None, temp=None):
@@ -21,19 +17,22 @@ def colorize(image, model_type=None, temp=None):
     gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
 
     if model_type == 'deconv':
+        print('Using deconv model')
         model = build_model_deconv()
         model_weights_path = './models/'
     elif model_type == 'imagenette':
+        print('Using imagenette model')
         model = build_model_imagenette()
-        model_weights_path = './models/'
+        model_weights_path = './models/Imagenette_model.hdf5'
             
     elif model_type == 'landscape':
+        print('Using landscape model')
         model = build_model()
-        model_weights_path = './models/'
+        model_weights_path = './models/Landscape.hdf5'
     else:
-        model_weights_path = './models/'
-        model = build_model()
         print('Using default model')
+        model_weights_path = './models/Imagnet_model.hdf5'
+        model = build_model()
 
     try:
         temp = float(temp)
@@ -47,7 +46,7 @@ def colorize(image, model_type=None, temp=None):
     h, w = IMG_ROWS // 4, IMG_COLS // 4
 
     # Load the array of quantized ab value
-    q_ab = np.load("data/pts_in_lab_space.npy")
+    q_ab = np.load("./models/pts_in_lab_space.npy")
     nb_q = q_ab.shape[0]
 
     image = cv.resize(image, (IMG_ROWS, IMG_COLS), cv.INTER_CUBIC)
@@ -95,6 +94,6 @@ def colorize(image, model_type=None, temp=None):
     K.clear_session()
 
     cv.imwrite('./img.jpeg', image)
-    cv.imwrite('./img_out.jpeg', image)
+    cv.imwrite('./img_out.jpeg', out_bgr)
 
     return image, out_bgr
