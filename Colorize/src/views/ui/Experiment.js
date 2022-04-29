@@ -9,6 +9,7 @@ import ex2 from '../../assets/images/examples/7_gt.png';
 const Starter = () => {
   const [file, setFile] = useState();
   const [img, setImg] = useState();
+  const [temp, setTemp] = useState();
   const [outputImage, setOutputImage] = useState();
 
   const handleChange = (e) => {
@@ -25,6 +26,9 @@ const Starter = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('model_type', 'landscape');
+    formData.append('temp', temp);
+
 
     for (var key of formData.entries()) {
       console.log(key[0] + ', ' + key[1]);
@@ -86,7 +90,7 @@ const Starter = () => {
         <Grid container spacing={0}>
             <Grid item xs={12} sx={{paddingLeft: 30, paddingRight: 30}}>
 
-                <Slider defaultValue={0.38} step={0.01} marks min={0} max={1} aria-label="Default" valueLabelDisplay="auto" sx={{padding:"50"}} />
+                <Slider defaultValue={0.38} step={0.01} marks min={0} max={1} aria-label="Default" valueLabelDisplay="auto" onChange={(e, val) => setTemp(val)}/>
             </Grid>
         </Grid>
         <Grid container spacing={0} justifyContent="space-evenly" sx={{ mt: 3 }}>
