@@ -5,6 +5,9 @@ import { Button, Card, CardBody, CardImg, CardTitle, Col, Row } from 'reactstrap
 import ex1 from '../../assets/images/examples/0_gt.png';
 import ex3 from '../../assets/images/examples/1_gt.png';
 import ex2 from '../../assets/images/examples/7_gt.png';
+import ex1o from '../../assets/images/examples/0_out.png';
+import ex3o from '../../assets/images/examples/1_out.png';
+import ex2o from '../../assets/images/examples/7_out.png';
 
 const Starter = () => {
   const [file, setFile] = useState();
@@ -72,7 +75,7 @@ const Starter = () => {
           </Grid>
           <Grid item xs={4}>
             <Card>
-              <CardImg alt="Card image cap" src={img} top width="256px" height="256px" />
+              <CardImg alt="Card image cap" src={img} style={{ filter: "grayscale(100%)" }} top width="256px" height="256px" />
               <CardBody>
                 <CardTitle tag="h5">Grayscale image</CardTitle>
               </CardBody>
@@ -110,13 +113,13 @@ const Starter = () => {
           <Grid item xs={6} alignSelf="center" justifySelf="center">
             <Grid container spacing={1} alignItems="center">
               <Grid item xs={4} alignSelf="center">
-                <CardImg alt="Card image cap" src={ex1} top width="25px" height="100px" />
+                <CardImg alt="Card image cap" src={ex1} top width="25px" height="100px" onClick={()=>{setImg(ex1); setOutputImage(ex1o)}}/>
               </Grid>
               <Grid item xs={4} alignSelf="center">
-                <CardImg alt="Card image cap" src={ex2} top width="25px" height="100px" />
+                <CardImg alt="Card image cap" src={ex2} top width="25px" height="100px" onClick={()=>{setImg(ex2); setOutputImage(ex2o)}}/>
               </Grid>
               <Grid item xs={4} alignSelf="center">
-                <CardImg alt="Card image cap" src={ex3} top width="25px" height="100px" />
+                <CardImg alt="Card image cap" src={ex3} top width="25px" height="100px" onClick={()=>{setImg(ex3); setOutputImage(ex3o)}}/>
               </Grid>
             </Grid>
             {/* Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id dignissim justo. etermines a grid item’s location within the grid by referring to specific grid lines. grid-column-start/grid-row-start is the line where the item begins, and grid-column-end/grid-row-end is the line where the item ends. */}
