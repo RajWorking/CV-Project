@@ -2,7 +2,7 @@ import { useState } from "react";
 import bg1 from "../../assets/images/bg/bg1.jpg";
 import bg2 from "../../assets/images/bg/bg2.jpg";
 import bg3 from "../../assets/images/bg/bg3.jpg";
-
+import {Divider, Grid} from '@mui/material';
 import {
     Card,
     CardImg,
@@ -28,6 +28,10 @@ const Starter = () => {
         setFile(e.target.files[0]);
         setImg(URL.createObjectURL(e.target.files[0]))
     }
+    let handleClick = (e) => {
+        if(e.target!==e.currentTarget) e.currentTarget.click()
+    }
+
 
     const Convert = (e) => {
         e.preventDefault()
@@ -73,14 +77,52 @@ const Starter = () => {
                         </CardBody>
                     </Card>
                 </CardGroup>
-                <Row className="mt-3" xs={6}>
-                    <Button variant="contained" component="label">
-                        <input type="file" onChange={handleChange} />
-                    </Button>
-                    <Button variant="contained" onClick={Convert}>
+                {/* <Grid container spacing={0}>
+
+                </Grid> */}
+                <Grid container spacing={0} justifyContent="space-evenly">
+                    <Grid item alignSelf="center" justifyContent="center">
+                        <input type="file" id="files" onChange={handleChange} style={{display: "none"}}/>
+                        <label for="files" onClick={handleClick} style={{padding: ''}}>
+                            <Button variant="outline-dark" component="span" style={{width: "100%"}}>
+                                Select File
+                            </Button>    
+                        </label>
+                        {/* <input type="file" id="files" onChange={handleChange} style={{display: "none"}}/>
+                        <label for="files" onClick={handleClick}>
+                            <Button variant="outline-dark" component="span" style={{width: "100%"}}>
+                                Select File
+                            </Button>    
+                        </label> */}
+                    </Grid>
+                    <Divider orientation="vertical" flexItem>
+                            OR
+                    </Divider>
+                    <Grid item xs={3} alignSelf="center" justifySelf="center" style={{flexWrap: 'wrap'}}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id dignissim justo.
+                        {/* {content} */}
+                    </Grid>
+                    <Grid item alignSelf="center" justifySelf="center">
+                        <Button variant="contained">
+                            Convert
+                        </Button>
+                    </Grid>
+                </Grid>
+                {/* <Row className="mt-3" xs={2} >
+                    <input type="file" id="files" onChange={handleChange} style={{display: "none"}}/>
+                    <label for="files" onClick={handleClick}>
+                        <Button variant="outline-dark" component="span" style={{width: "50%"}}>
+                            Select File
+                        </Button>    
+                    </label>
+                    <Divider orientation="vertical" flexItem>
+                        OR
+                    </Divider>
+                    <Button/>
+                    <Button variant="contained">
                         Convert
                     </Button>
-                </Row>
+                </Row> */}
             </Col>
         </Row>
     );
