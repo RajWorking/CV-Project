@@ -2,13 +2,20 @@ import { Divider, Grid, Slider, Box } from '@mui/material';
 import axios from 'axios';
 import { useState } from 'react';
 import { Button, Card, CardBody, CardImg, CardTitle, Col, Row } from 'reactstrap';
-import ex1 from '../../assets/images/examples/0_gt.png';
-import ex3 from '../../assets/images/examples/1_gt.png';
-import ex2 from '../../assets/images/examples/7_gt.png';
-import ex1o_n from '../../assets/images/examples/0_out.png';
-import ex3o_n from '../../assets/images/examples/1_out.png';
+
 import empty_img from '../../assets/images/bg/empty.jpg';
+
+import ex1 from '../../assets/images/examples/1.jpg';
+import ex1_net from '../../assets/images/examples/1_net_out.jpg';
+import ex1_nette from '../../assets/images/examples/1_nette_out.jpg';
+import ex1_deconv from '../../assets/images/examples/1_deconv_out.jpg';
+import ex1_land from '../../assets/images/examples/1_land_out.jpg';
+
+import ex2 from '../../assets/images/examples/7_gt.png';
 import ex2o_n from '../../assets/images/examples/7_out.png';
+
+import ex3 from '../../assets/images/examples/1_gt.png';
+import ex3o_n from '../../assets/images/examples/1_out.png';
 
 const Experiment = ({ label = '', model_type = '', default_outputs }) => {
   const [ex1o, ex2o, ex3o] = default_outputs;
@@ -31,10 +38,6 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
     formData.append('file', file);
     formData.append('model_type', model_type);
     formData.append('temp', temp);
-
-    for (var key of formData.entries()) {
-      console.log(key[0] + ', ' + key[1]);
-    }
 
     const Upload = async () => {
       const response = await axios.post('http://localhost:8000/a', formData);
@@ -154,7 +157,7 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
               </Grid>
               <Grid item xs={4} alignSelf="center">
                 <CardImg
-                  alt="Card image cap"
+                  alt="Card image cap"center
                   src={ex3}
                   top
                   width="25px"
@@ -186,28 +189,31 @@ const Starter = () => {
       <Box sx={{ backgroundColor: '' }}>
         <Experiment
           label="Model trained on Imagenet (10%)"
-          default_outputs={[ex1o_n, ex2o_n, ex3o_n]}
+          default_outputs={[ex1_net, ex2o_n, ex3o_n]}
         />
       </Box>
-      <Box sx={{ mt: 15, backgroundColor: '' }}>
-        <Experiment
-          label="Model trained on Imagenette"
-          model_type="imagenette"
-          default_outputs={[ex1o_n, ex2o_n, ex3o_n]}
-        />
-      </Box>
-      <Box sx={{ mt: 15, backgroundColor: '' }}>
+      <Divider sx={{ mb: 5, mt: 10 }} />
+      <Box>
         <Experiment
           label="Model trained by adding extra Deconvolution layer"
           model_type="deconv"
-          default_outputs={[ex1o_n, ex2o_n, ex3o_n]}
+          default_outputs={[ex1_deconv, ex2o_n, ex3o_n]}
         />
       </Box>
-      <Box sx={{ mt: 15, backgroundColor: '' }}>
+      <Divider sx={{ mb: 5, mt: 10 }} />
+      <Box>
+        <Experiment
+          label="Model trained on Imagenette"
+          model_type="imagenette"
+          default_outputs={[ex1_nette, ex2o_n, ex3o_n]}
+        />
+      </Box>
+      <Divider sx={{ mb: 5, mt: 10 }} />
+      <Box>
         <Experiment
           label="Model trained on a Landscape dataset"
           model_type="landscape"
-          default_outputs={[ex1o_n, ex2o_n, ex3o_n]}
+          default_outputs={[ex1_land, ex2o_n, ex3o_n]}
         />
       </Box>
     </Box>
