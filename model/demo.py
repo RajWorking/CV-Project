@@ -14,7 +14,7 @@ from model import build_model
 if __name__ == '__main__':
     channel = 3
 
-    model_weights_path = 'models/Landscape.hdf5'
+    model_weights_path = 'models/Imagnet_model.hdf5'
     model = build_model()
     model.load_weights(model_weights_path)
 
@@ -37,7 +37,19 @@ if __name__ == '__main__':
         'test8.jpg',
         'test9.jpg',
         'test10.jpg',
-        'test11.jpeg'
+        'test11.jpeg',
+        'test12.png',
+        'test13.png',
+        'test14.png',
+        'test15.png',
+        'test16.png',
+        'test17.png',
+        'test18.png',
+        'test19.png',
+        'test20.png',
+        'test21.png',
+        'test22.png',
+        'test23.png',
     ]
 
     h, w = IMG_ROWS // 4, IMG_COLS // 4
