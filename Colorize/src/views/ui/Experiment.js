@@ -110,9 +110,10 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
         </Grid>
         <Grid container spacing={0} justifyContent="space-evenly" sx={{ mt: 3 }}>
           <Grid item alignSelf="center">
-            <input type="file" id="files" onChange={handleChange} style={{ display: 'none' }}  ref={hiddenFileInput}/>
-            <label htmlFor="files" onClick={handleClick}>
-              <Button variant="outline-dark" component="span" style={{ width: '100%' }}>
+            <label >
+            <input type="file" onChange={handleChange} style={{ display: 'none' }} />
+              
+              <Button variant="outline-dark" component="span" style={{ width: '100%' }} onClick={e => e.target.parentElement.click()}>
                 Select File
               </Button>
             </label>
