@@ -3,19 +3,14 @@ import { Link, useLocation } from "react-router-dom";
 
 const navigation = [
   {
-    title: "Dashboard",
-    href: "/starter",
-    icon: "bi bi-speedometer2",
+    title: "Examples",
+    href: "/examples",
+    icon: "bi bi-columns",
   },
   {
     title: "Experiment",
     href: "/experiment",
     icon: "bi bi-patch-check",
-  },
-  {
-    title: "Examples",
-    href: "/examples",
-    icon: "bi bi-columns",
   },
   // {
   //   title: "Alert",

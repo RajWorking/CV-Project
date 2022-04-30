@@ -1,21 +1,27 @@
 import { Divider, Grid, Slider, Box } from '@mui/material';
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button, Card, CardBody, CardImg, CardTitle, Col, Row } from 'reactstrap';
 
 import empty_img from '../../assets/images/bg/empty.jpg';
 
-import ex1 from '../../assets/images/examples/1.jpg';
-import ex1_net from '../../assets/images/examples/1_net_out.jpg';
-import ex1_nette from '../../assets/images/examples/1_nette_out.jpg';
-import ex1_deconv from '../../assets/images/examples/1_deconv_out.jpg';
-import ex1_land from '../../assets/images/examples/1_land_out.jpg';
+import ex1 from '../../assets/images/experiments/1.jpg';
+import ex1_net from '../../assets/images/experiments/1_net_out.jpg';
+import ex1_nette from '../../assets/images/experiments/1_nette_out.jpg';
+import ex1_deconv from '../../assets/images/experiments/1_deconv_out.jpg';
+import ex1_land from '../../assets/images/experiments/1_land_out.jpg';
 
-import ex2 from '../../assets/images/examples/7_gt.png';
-import ex2o_n from '../../assets/images/examples/7_out.png';
+import ex2 from '../../assets/images/experiments/2.png';
+import ex2_net from '../../assets/images/experiments/2_net_out.jpeg';
+import ex2_nette from '../../assets/images/experiments/2_nette_out.jpeg';
+import ex2_deconv from '../../assets/images/experiments/2_deconv_out.jpeg';
+import ex2_land from '../../assets/images/experiments/2_land_out.jpeg';
 
-import ex3 from '../../assets/images/examples/1_gt.png';
-import ex3o_n from '../../assets/images/examples/1_out.png';
+import ex3 from '../../assets/images/experiments/3.png';
+import ex3_net from '../../assets/images/experiments/3_net_out.jpeg';
+import ex3_nette from '../../assets/images/experiments/3_nette_out.jpeg';
+import ex3_deconv from '../../assets/images/experiments/3_deconv_out.jpeg';
+import ex3_land from '../../assets/images/experiments/3_land_out.jpeg';
 
 const Experiment = ({ label = '', model_type = '', default_outputs }) => {
   const [ex1o, ex2o, ex3o] = default_outputs;
@@ -24,6 +30,7 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
   const [img, setImg] = useState(empty_img);
   const [temp, setTemp] = useState(0.38);
   const [outputImage, setOutputImage] = useState(empty_img);
+  const inputEl = useRef(null);
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -110,7 +117,7 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
         <Grid container spacing={0} justifyContent="space-evenly" sx={{ mt: 3 }}>
           <Grid item alignSelf="center">
             <label>
-              <input type="file" onChange={handleChange} style={{ display: 'none' }} />
+              <input ref={inputEl} type="file" onChange={handleChange} style={{ display: 'none' }} />
 
               <Button
                 variant="outline-dark"
@@ -137,6 +144,9 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
                   width="25px"
                   height="100px"
                   onClick={() => {
+                    if(inputEl.current) {
+                      inputEl.current.value = null;
+                    }
                     setImg(ex1);
                     setOutputImage(ex1o);
                   }}
@@ -151,6 +161,9 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
                   height="100px"
                   onClick={() => {
                     setImg(ex2);
+                    if(inputEl.current) {
+                      inputEl.current.value = null;
+                    }
                     setOutputImage(ex2o);
                   }}
                 />
@@ -164,6 +177,9 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
                   height="100px"
                   onClick={() => {
                     setImg(ex3);
+                    if(inputEl.current) {
+                      inputEl.current.value = null;
+                    }
                     setOutputImage(ex3o);
                   }}
                 />
@@ -189,7 +205,7 @@ const Starter = () => {
       <Box sx={{ backgroundColor: '' }}>
         <Experiment
           label="Model trained on Imagenet (10%)"
-          default_outputs={[ex1_net, ex2o_n, ex3o_n]}
+          default_outputs={[ex1_net, ex2_net, ex3_net]}
         />
       </Box>
       <Divider sx={{ mb: 5, mt: 10 }} />
@@ -197,7 +213,7 @@ const Starter = () => {
         <Experiment
           label="Model trained by adding extra Deconvolution layer"
           model_type="deconv"
-          default_outputs={[ex1_deconv, ex2o_n, ex3o_n]}
+          default_outputs={[ex1_deconv, ex2_deconv, ex3_deconv]}
         />
       </Box>
       <Divider sx={{ mb: 5, mt: 10 }} />
@@ -205,7 +221,7 @@ const Starter = () => {
         <Experiment
           label="Model trained on Imagenette"
           model_type="imagenette"
-          default_outputs={[ex1_nette, ex2o_n, ex3o_n]}
+          default_outputs={[ex1_nette, ex2_nette, ex3_nette]}
         />
       </Box>
       <Divider sx={{ mb: 5, mt: 10 }} />
@@ -213,7 +229,7 @@ const Starter = () => {
         <Experiment
           label="Model trained on a Landscape dataset"
           model_type="landscape"
-          default_outputs={[ex1_land, ex2o_n, ex3o_n]}
+          default_outputs={[ex1_land, ex2_land, ex3_land]}
         />
       </Box>
     </Box>

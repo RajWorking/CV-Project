@@ -17,7 +17,7 @@ import {
   } from "react-compare-slider";
   
   /** With Customised `handle`. */
-  export const CustomHandle = ({ style, ...props }) => {
+  export const CustomHandle = ({ style, gt, out }) => {
     const handlePositionChange = useCallback(
       (position) => console.log("[Portrait]", position),
       []
@@ -25,7 +25,6 @@ import {
   
     return (
       <ReactCompareSlider
-        {...props}
         handle={
           <ReactCompareSliderHandle
             buttonStyle={{
@@ -38,14 +37,13 @@ import {
         }
         itemOne={
           <ReactCompareSliderImage
-            src="https://images.unsplash.com/photo-1580458148391-8c4951dc1465?auto=format&fit=crop&w=1280&q=80"
-            style={{ filter: "grayscale(1)" }}
+            src={out}
             alt="one"
           />
         }
         itemTwo={
           <ReactCompareSliderImage
-            src="https://images.unsplash.com/photo-1580458148391-8c4951dc1465?auto=format&fit=crop&w=1280&q=80"
+            src={gt}
             alt="two"
           />
         }
@@ -60,10 +58,10 @@ import {
     );
   };
   
-  const Blog = (props) => {
+  const Blog = ({gt, out}) => {
     return (
       <Card>
-      <CustomHandle position={25} />
+      <CustomHandle position={25} gt={gt} out={out}/>
       </Card>
     );
   };
