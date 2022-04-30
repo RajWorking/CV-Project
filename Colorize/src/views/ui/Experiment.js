@@ -1,23 +1,22 @@
 import { Divider, Grid, Slider, Box } from '@mui/material';
 import axios from 'axios';
-import { useState , useRef} from 'react';
+import { useState } from 'react';
 import { Button, Card, CardBody, CardImg, CardTitle, Col, Row } from 'reactstrap';
 import ex1 from '../../assets/images/examples/0_gt.png';
 import ex3 from '../../assets/images/examples/1_gt.png';
 import ex2 from '../../assets/images/examples/7_gt.png';
 import ex1o_n from '../../assets/images/examples/0_out.png';
 import ex3o_n from '../../assets/images/examples/1_out.png';
+import empty_img from '../../assets/images/bg/empty.jpg';
 import ex2o_n from '../../assets/images/examples/7_out.png';
 
 const Experiment = ({ label = '', model_type = '', default_outputs }) => {
   const [ex1o, ex2o, ex3o] = default_outputs;
 
-  const hiddenFileInput = useRef(null)
-
   const [file, setFile] = useState();
-  const [img, setImg] = useState();
-  const [temp, setTemp] = useState();
-  const [outputImage, setOutputImage] = useState();
+  const [img, setImg] = useState(empty_img);
+  const [temp, setTemp] = useState(0.38);
+  const [outputImage, setOutputImage] = useState(empty_img);
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -25,11 +24,6 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
     setFile(e.target.files[0]);
     setImg(URL.createObjectURL(e.target.files[0]));
   };
-  // const handleClick = (e) => {
-  //   if (e.target !== e.currentTarget) e.currentTarget.click();
-  // };
-
-  const handleClick = (e) => {hiddenFileInput.current.click()}
 
   const Convert = (e) => {
     e.preventDefault();
@@ -46,9 +40,9 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
       const response = await axios.post('http://localhost:8000/a', formData);
 
       const data = response.data;
-      console.log(data);
+      // console.log(data);
 
-      console.log(typeof data['input'], data['input']);
+      // console.log(typeof data['input'], data['input']);
 
       setOutputImage('data:image/jpg;base64,' + data['output']);
 
@@ -59,7 +53,9 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
 
   return (
     <Row>
-      <h3 className="mb-3 mt-3">{label}</h3>
+      <h3 className="mb-3 mt-3">
+        <b>{label}</b>
+      </h3>
       <Col>
         <Grid container spacing={3}>
           <Grid item xs={4}>
@@ -110,10 +106,15 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
         </Grid>
         <Grid container spacing={0} justifyContent="space-evenly" sx={{ mt: 3 }}>
           <Grid item alignSelf="center">
-            <label >
-            <input type="file" onChange={handleChange} style={{ display: 'none' }} />
-              
-              <Button variant="outline-dark" component="span" style={{ width: '100%' }} onClick={e => e.target.parentElement.click()}>
+            <label>
+              <input type="file" onChange={handleChange} style={{ display: 'none' }} />
+
+              <Button
+                variant="outline-dark"
+                component="span"
+                style={{ width: '100%' }}
+                onClick={(e) => e.target.parentElement.click()}
+              >
                 Select File
               </Button>
             </label>
@@ -182,27 +183,30 @@ const Experiment = ({ label = '', model_type = '', default_outputs }) => {
 const Starter = () => {
   return (
     <Box>
-      {/* <Box sx={{ backgroundColor: '' }}>
-        <Experiment label="Model trained on imagenet" default_outputs={[ex1o_n, ex2o_n, ex3o_n]} />
-      </Box> */}
-      <Box sx={{ mt: 10, backgroundColor: '' }}>
+      <Box sx={{ backgroundColor: '' }}>
         <Experiment
-          label="Model trained on imagenette"
+          label="Model trained on Imagenet (10%)"
+          default_outputs={[ex1o_n, ex2o_n, ex3o_n]}
+        />
+      </Box>
+      <Box sx={{ mt: 15, backgroundColor: '' }}>
+        <Experiment
+          label="Model trained on Imagenette"
           model_type="imagenette"
           default_outputs={[ex1o_n, ex2o_n, ex3o_n]}
         />
       </Box>
-      <Box sx={{ mt: 10, backgroundColor: '' }}>
+      <Box sx={{ mt: 15, backgroundColor: '' }}>
         <Experiment
-          label="Model trained on landscape dataset"
-          model_type="landscape"
+          label="Model trained by adding extra Deconvolution layer"
+          model_type="deconv"
           default_outputs={[ex1o_n, ex2o_n, ex3o_n]}
         />
       </Box>
-      <Box sx={{ mt: 10, backgroundColor: '' }}>
+      <Box sx={{ mt: 15, backgroundColor: '' }}>
         <Experiment
-          label="Model trained by adding deconv layer"
-          model_type="deconv"
+          label="Model trained on a Landscape dataset"
+          model_type="landscape"
           default_outputs={[ex1o_n, ex2o_n, ex3o_n]}
         />
       </Box>

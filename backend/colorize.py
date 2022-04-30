@@ -19,7 +19,7 @@ def colorize(image, model_type=None, temp=None):
     if model_type == 'deconv':
         print('Using deconv model')
         model = build_model_deconv()
-        model_weights_path = './models/'
+        model_weights_path = './models/deconv_model.hdf5'
     elif model_type == 'imagenette':
         print('Using imagenette model')
         model = build_model_imagenette()
@@ -43,7 +43,10 @@ def colorize(image, model_type=None, temp=None):
 
     model.load_weights(model_weights_path)
 
-    h, w = IMG_ROWS // 4, IMG_COLS // 4
+    if model_type == 'deconv':
+        h, w = IMG_ROWS // 2, IMG_COLS // 2
+    else:
+        h, w = IMG_ROWS // 4, IMG_COLS // 4
 
     # Load the array of quantized ab value
     q_ab = np.load("./models/pts_in_lab_space.npy")
@@ -93,7 +96,7 @@ def colorize(image, model_type=None, temp=None):
 
     K.clear_session()
 
-    cv.imwrite('./img.jpeg', image)
-    cv.imwrite('./img_out.jpeg', out_bgr)
+    # cv.imwrite('./img.jpeg', image)
+    # cv.imwrite('./img_out.jpeg', out_bgr)
 
     return image, out_bgr
