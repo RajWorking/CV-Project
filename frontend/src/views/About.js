@@ -32,7 +32,7 @@ const About = () => {
                   You can also upload you <b>own images</b> in the experiments tab to check the models results. Have fun exploring the reuslts. 😄<br/><br/>
                   
 
-                  <b>Based on DeepLearning. Made with Love ❤️ </b>
+                  <b>Based on DeepLearning. Made with ❤️ </b>
                 </h5>
                 <h5 className=" mb-4">
                   Credits: <br />
